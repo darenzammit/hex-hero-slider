@@ -14,15 +14,22 @@ if (!defined('ABSPATH')) {
 class Hex_Hero_Slider {
 
 	/**
+	 * Hex_Hero_Slider version.
+	 *
+	 * @var string
+	 */
+	public $version = '1.0';
+
+	/**
 	 * The single instance of the class.
-	 * @var HexHeroSlider
+	 * @var Hex_Hero_Slider
 	 */
 	protected static $_instance = null;
 
 	/**
-	 * Main HexHeroSlider Instance.
-	 * Ensures only one instance of HexHeroSlider is loaded or can be loaded.
-	 * @return HexHeroSlider - Main instance.
+	 * Main Hex_Hero_Slider Instance.
+	 * Ensures only one instance of Hex_Hero_Slider is loaded or can be loaded.
+	 * @return Hex_Hero_Slider - Main instance.
 	 */
 	public static function instance() {
 		if (is_null(self::$_instance)) {
@@ -32,7 +39,7 @@ class Hex_Hero_Slider {
 	}
 
 	/**
-	 * HexHeroSlider Constructor.
+	 * Hex_Hero_Slider Constructor.
 	 */
 	public function __construct() {
 		if ($this->dependencies_loaded()) {
@@ -219,7 +226,6 @@ class Hex_Hero_Slider {
 			$template = locate_template(array("hero-slider/{$slug}-{$name}.php", "components/hero-slider/{$slug}-{$name}.php"));
 		}
 
-		
 		// Get default slug-name.php
 		if (!$template && $name && file_exists($this->plugin_path() . "/templates/{$slug}-{$name}.php")) {
 			$template = $this->plugin_path() . "/templates/{$slug}-{$name}.php";
@@ -243,13 +249,17 @@ class Hex_Hero_Slider {
 	/**
 	 * Load Scripts
 	 */
-	public function load_scripts(){
-
-		wp_enqueue_style('swiper', plugins_url('assets/vendor/swiper/css/swiper.min.css', __FILE__), [], '3.4.2');
-		wp_enqueue_script('swiper', plugins_url('assets/vendor/swiper/js/swiper.min.js', __FILE__), [], '3.4.2');
-
-		wp_enqueue_style('hex-hero-slider', plugins_url('assets/css/hero-slider.css', __FILE__), ['swiper'], time());
-		wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), ['swiper'], time());
+	public function load_scripts() {
+		if (apply_filters('hex/hero_slider/load_frontend_scripts', true)) {
+			
+			wp_enqueue_style('swiper', plugins_url('assets/vendor/swiper/css/swiper.min.css', __FILE__), [], '3.4.2');
+			wp_enqueue_script('swiper', plugins_url('assets/vendor/swiper/js/swiper.min.js', __FILE__), [], '3.4.2');
+			wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), ['jquery', 'swiper'], $this->version);
+			
+			if (apply_filters('hex/hero_slider/load_frontend_style', true)) {
+				wp_enqueue_style('hex-hero-slider', plugins_url('assets/css/hero-slider.css', __FILE__), ['swiper'], $this->version);
+			}
+		}
 	}
 
 }
