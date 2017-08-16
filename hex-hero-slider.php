@@ -244,8 +244,12 @@ class Hex_Hero_Slider {
 	 * Load Scripts
 	 */
 	public function load_scripts(){
-		wp_enqueue_style('hex-hero-slider', plugins_url('assets/css/hero-slider.css', __FILE__), [], time());
-		wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), [], time());
+
+		wp_enqueue_style('swiper', plugins_url('assets/vendor/swiper/css/swiper.min.css', __FILE__), [], '3.4.2');
+		wp_enqueue_script('swiper', plugins_url('assets/vendor/swiper/js/swiper.min.js', __FILE__), [], '3.4.2');
+
+		wp_enqueue_style('hex-hero-slider', plugins_url('assets/css/hero-slider.css', __FILE__), ['swiper'], time());
+		wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), ['swiper'], time());
 	}
 
 }
