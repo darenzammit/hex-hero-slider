@@ -62,7 +62,9 @@ class Hex_Hero_Slider {
 	private function includes() {
 		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-cpts/extended-cpts.php';
 		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-taxos/extended-taxos.php';
-		include_once dirname(__FILE__) . '/includes/hex-hero-slider-admin.php';
+
+		include_once dirname(__FILE__) . '/includes/acf-field-group.php';
+		include_once dirname(__FILE__) . '/includes/class-admin.php';
 	}
 
 	/**
