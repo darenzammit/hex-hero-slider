@@ -60,17 +60,23 @@ class Hex_Hero_Slider {
 	 * Include required files
 	 */
 	private function includes() {
+
+		/**
+		 * Vendor
+		 */
 		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-cpts/extended-cpts.php';
 		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-taxos/extended-taxos.php';
 
+		/**
+		 * Field Groups
+		 */
 		include_once dirname(__FILE__) . '/includes/acf-field-group.php';
+
+		/**
+		 * Core classes
+		 */
 		include_once dirname(__FILE__) . '/includes/class-admin.php';
 	}
-
-	/**
-	 * Admin Views
-	 */
-	private function admin_views() {}
 
 	/**
 	 * Register Custom Post Types + Taxonomies
@@ -190,8 +196,41 @@ class Hex_Hero_Slider {
 	public function render() {
 		global $slides;
 		if (apply_filters('hex/hero_slider/show_on', false) && ($slides = $this->get_slides())) {
-			// Hex\get_component('hero-slider/slider', $slides->display);
-			// load template
+			$this->get_template_part('slider', $slides->display);
+		}
+	}
+
+	/**
+	 * Get the plugin path.
+	 * @return string
+	 */
+	public function plugin_path() {
+		return untrailingslashit(plugin_dir_path(__FILE__));
+	}
+
+	/**
+	 * Get template part
+	 */
+	public function get_template_part($slug, $name = '') {
+		$template = '';
+
+		// Look in yourtheme/hero-slider/slug-name.php and yourtheme/components/hero-slider/slug-name.php
+		if ($name) {
+			$template = locate_template(array("hero-slider/{$slug}-{$name}.php", "components/hero-slider/{$slug}-{$name}.php"));
+		}
+
+		// Get default slug-name.php
+		if (!$template && $name && file_exists($this->plugin_path() . "/templates/{$slug}-{$name}.php")) {
+			$template = $this->plugin_path() . "/templates/{$slug}-{$name}.php";
+		}
+
+		// If template file doesn't exist, look in yourtheme/hero-slider/slug.php and yourtheme/components/hero-slider/slug.php
+		if (!$template && !WC_TEMPLATE_DEBUG_MODE) {
+			$template = locate_template(array("hero-slider/{$slug}.php", "components/hero-slider/{$slug}.php"));
+		}
+
+		if ($template) {
+			load_template($template, false);
 		}
 	}
 
