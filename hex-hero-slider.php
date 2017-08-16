@@ -35,10 +35,16 @@ class Hex_Hero_Slider {
 	 * HexHeroSlider Constructor.
 	 */
 	public function __construct() {
-		if (class_exists('acf')) {
+		if ($this->dependencies_loaded()) {
 			$this->includes();
 			$this->init_hooks();
 			$this->register_objects();
+		}
+	}
+
+	public function dependencies_loaded(){
+		if (class_exists('acf')) {
+				return true;
 		}
 	}
 
@@ -98,6 +104,76 @@ class Hex_Hero_Slider {
 				]
 			);
 		}
+	}
+
+	/**
+	 * Returns array of slide post objects
+	 */
+
+	public function get_slides() {
+
+		if (!$this->dependencies_loaded()) {
+			return;
+		}
+
+		$config  = ['post_type' => 'hex_hero_slide', 'posts_per_page' => 50, 'orderby' => 'menu_order'];
+		$slides  = (object) [];
+		$post_id = get_queried_object();
+
+		if (is_object($post_id)) {
+			// post
+			if (isset($post_id->post_type, $post_id->ID)) {
+				$post_id = $post_id->ID;
+				// user
+			} elseif (isset($post_id->roles, $post_id->ID)) {
+				$post_id = 'user_' . $post_id->ID;
+				// term
+			} elseif (isset($post_id->taxonomy, $post_id->term_id)) {
+				$post_id = 'term_' . $post_id->term_id;
+				// comment
+			} elseif (isset($post_id->comment_ID)) {
+				$post_id = 'comment_' . $post_id->comment_ID;
+			} else {
+				$post_id = 0;
+			}
+		}
+
+		$hero_slider_display = get_field('hero_slider_display', $post_id);
+
+		if (empty($hero_slider_display) || ('default' == $hero_slider_display)) {
+			$post_id             = 'option';
+			$hero_slider_display = get_field('hero_slider_display', $post_id);
+		}
+
+		$slides->display = $hero_slider_display;
+
+		if ('custom' == $hero_slider_display) {
+			$slides->items = get_field('hero_slider_slides', $post_id);
+		}
+
+		if ('slider' == $hero_slider_display) {
+			$slides->items = get_posts([
+				'tax_query' => [
+					[
+						'taxonomy' => 'hex_hero_slider',
+						'field'    => 'term_id',
+						'terms'    => get_field('hero_slider_slider', $post_id),
+					],
+				],
+			] + $config);
+		}
+
+		if ('gallery' == $hero_slider_display) {
+			$slides->items   = get_field('hero_slider_gallery', $post_id);
+			$slides->content = get_field('hero_slider_content', $post_id);
+		}
+
+		$slides->object_id = $post_id;
+
+		if (isset($slides->items)) {
+			return $slides;
+		}
+
 	}
 
 }
