@@ -39,7 +39,6 @@ class Hex_Hero_Slider {
 			$this->includes();
 			$this->init_hooks();
 			$this->register_objects();
-			$this->admin_views();
 		}
 	}
 
@@ -61,40 +60,15 @@ class Hex_Hero_Slider {
 	 * Include required files
 	 */
 	private function includes() {
-		require_once dirname(__FILE__) . '/vendor/johnbillion/extended-cpts/extended-cpts.php';
-		require_once dirname(__FILE__) . '/vendor/johnbillion/extended-taxos/extended-taxos.php';
+		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-cpts/extended-cpts.php';
+		include_once dirname(__FILE__) . '/vendor/johnbillion/extended-taxos/extended-taxos.php';
+		include_once dirname(__FILE__) . '/includes/hex-hero-slider-admin.php';
 	}
 
 	/**
 	 * Admin Views
 	 */
-	private function admin_views() {
-		
-		/**
-		 * Add Hero Options Page
-		 */
-		if (function_exists('acf_add_options_page')) {
-			acf_add_options_sub_page([
-				'page_title'  => 'Hero Slider Settings',
-				'menu_title'  => 'Settings',
-				'menu_slug'   => 'settings',
-				'parent_slug' => 'edit.php?post_type=hex_hero_slide',
-			]);
-		}
-
-		/**
-		 * Remove the Default option from the settings page
-		 */
-		add_filter('acf/load_field/name=hero_slider_display', function ($field) {
-			if (is_admin() && $current_screen = get_current_screen()) {
-				if ('hex_hero_slide_page_settings' == $current_screen->id) {
-					unset($field['choices']['default']);
-				}
-			}
-			return $field;
-		});
-
-	}
+	private function admin_views() {}
 
 	/**
 	 * Register Custom Post Types + Taxonomies
