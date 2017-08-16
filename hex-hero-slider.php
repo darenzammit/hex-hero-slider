@@ -52,7 +52,7 @@ class Hex_Hero_Slider {
 	 * Hook into actions and filters.
 	 */
 	private function init_hooks() {
-		// add_action('hook', [$this, 'function_callback']);
+		add_action('wp_enqueue_scripts', [$this, 'load_scripts']);
 		// add_filter('hook', [$this, 'function_callback']);
 	}
 
@@ -195,7 +195,7 @@ class Hex_Hero_Slider {
 	 */
 	public function render() {
 		global $slides;
-		if (apply_filters('hex/hero_slider/show_on', false) && ($slides = $this->get_slides())) {
+		if (apply_filters('hex/hero_slider/show_on', true) && ($slides = $this->get_slides())) {
 			$this->get_template_part('slider', $slides->display);
 		}
 	}
@@ -219,6 +219,7 @@ class Hex_Hero_Slider {
 			$template = locate_template(array("hero-slider/{$slug}-{$name}.php", "components/hero-slider/{$slug}-{$name}.php"));
 		}
 
+		
 		// Get default slug-name.php
 		if (!$template && $name && file_exists($this->plugin_path() . "/templates/{$slug}-{$name}.php")) {
 			$template = $this->plugin_path() . "/templates/{$slug}-{$name}.php";
@@ -229,9 +230,22 @@ class Hex_Hero_Slider {
 			$template = locate_template(array("hero-slider/{$slug}.php", "components/hero-slider/{$slug}.php"));
 		}
 
+		// Get default slug.php
+		if (!$template && file_exists($this->plugin_path() . "/templates/{$slug}.php")) {
+			$template = $this->plugin_path() . "/templates/{$slug}.php";
+		}
+
 		if ($template) {
 			load_template($template, false);
 		}
+	}
+
+	/**
+	 * Load Scripts
+	 */
+	public function load_scripts(){
+		wp_enqueue_style('hex-hero-slider', plugins_url('assets/css/hero-slider.css', __FILE__), [], time());
+		wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), [], time());
 	}
 
 }
