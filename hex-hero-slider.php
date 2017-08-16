@@ -11,15 +11,35 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-class HexHeroSlider {
+class Hex_Hero_Slider {
+
+	/**
+	 * The single instance of the class.
+	 * @var HexHeroSlider
+	 */
+	protected static $_instance = null;
+
+	/**
+	 * Main HexHeroSlider Instance.
+	 * Ensures only one instance of HexHeroSlider is loaded or can be loaded.
+	 * @return HexHeroSlider - Main instance.
+	 */
+	public static function instance() {
+		if (is_null(self::$_instance)) {
+			self::$_instance = new self();
+		}
+		return self::$_instance;
+	}
 
 	/**
 	 * HexHeroSlider Constructor.
 	 */
-	function __construct() {
-		$this->includes();
-		$this->init_hooks();
-		$this->register_objects();
+	public function __construct() {
+		if (class_exists('acf')) {
+			$this->includes();
+			$this->init_hooks();
+			$this->register_objects();
+		}
 	}
 
 	/**
@@ -82,4 +102,14 @@ class HexHeroSlider {
 
 }
 
-new HexHeroSlider();
+/**
+ * Main instance of Hex_Hero_Slider.
+ * Returns the main instance of WC to prevent the need to use globals.
+ * @return Hex_Hero_Slider
+ */
+
+function HeroSlider() {
+	return Hex_Hero_Slider::instance();
+}
+
+add_action('plugins_loaded', 'HeroSlider');
