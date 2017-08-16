@@ -1,4 +1,4 @@
-#Hex Hero Slider
+# Hex Hero Slider
 
 Slider plugin based on ACF and Swiper.
 
