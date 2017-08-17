@@ -252,6 +252,8 @@ class Hex_Hero_Slider {
 	public function load_scripts() {
 		if (apply_filters('hex/hero_slider/load_frontend_scripts', true)) {
 			
+			$this->version = time();
+
 			wp_enqueue_style('swiper', plugins_url('assets/vendor/swiper/css/swiper.min.css', __FILE__), [], '3.4.2');
 			wp_enqueue_script('swiper', plugins_url('assets/vendor/swiper/js/swiper.min.js', __FILE__), [], '3.4.2');
 			wp_enqueue_script('hex-hero-slider', plugins_url('assets/js/hero-slider.js', __FILE__), ['jquery', 'swiper'], $this->version);
