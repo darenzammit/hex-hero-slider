@@ -1,6 +1,7 @@
 {
     "require": {
         "johnbillion/extended-cpts": "^3.2",
-        "johnbillion/extended-taxos": "^2.0"
+        "johnbillion/extended-taxos": "^2.0",
+        "twbs/bootstrap": "4.0.0-alpha.6"
     }
 }
